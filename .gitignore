@@ -1,0 +1,15 @@
+# Test and coverage output
+*.test
+*.out
+coverage.*
+
+# Editor and OS files
+.DS_Store
+*.swp
+
+# Build output
+/bin/
+
+# Local secrets and state
+.cable.secrets.yaml
+*.cable.secrets.yaml
