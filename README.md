@@ -14,7 +14,7 @@ live as plain YAML files in a Git repository.
 
 ## Status
 
-Early development: only `cable version` works so far.
+Early development: `cable list`, `cable validate` and `cable version` work so far.
 
 ## Development
 

@@ -1,0 +1,65 @@
+version: 1
+name: Billing API
+
+vars:
+  user: alice
+
+defaults:
+  headers:
+    Accept: application/json
+  timeout: 30s
+
+profiles:
+  dev:
+    vars:
+      host: https://billing.dev.example.com
+  prod:
+    vars:
+      host: https://billing.example.com
+    confirm: true          # ask before every send
+
+secrets:
+  password:
+    description: Billing account password
+    from: [file, prompt]
+    remember: session      # keep in memory until quit
+  api_key:
+    from: [env:BILLING_API_KEY, file, keyring]
+
+prompts:
+  customer_id:
+    description: Customer to invoice
+    default: cus_test
+
+requests:
+  - folder: auth
+    requests:
+      - id: login
+        name: Login
+        method: POST
+        url: "{{ host }}/oauth/token"
+        body:
+          form:
+            grant_type: password
+            username: "{{ user }}"
+            password: "{{ secret.password }}"
+
+  - folder: invoices
+    auth:
+      bearer: "{{ response.auth.login.body.access_token }}"
+    requests:
+      - id: list
+        method: GET
+        url: "{{ host }}/v1/invoices"
+        query:
+          limit: "20"
+          status: open
+      - id: create
+        method: POST
+        url: "{{ host }}/v1/invoices"
+        headers:
+          X-Api-Key: "{{ secret.api_key }}"
+        body:
+          json:
+            customer: "{{ prompt.customer_id }}"
+            amount: 1200
