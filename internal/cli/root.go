@@ -49,7 +49,7 @@ func NewRootCommand() *cobra.Command {
 	root.PersistentFlags().StringVarP(&opts.Collection, "collection", "c", "", "collection file (default: nearest cable.yaml)")
 	root.PersistentFlags().StringVarP(&opts.Profile, "profile", "p", "", "profile to use")
 
-	root.AddCommand(newVersionCommand())
+	root.AddCommand(newVersionCommand(), newListCommand(opts), newValidateCommand(opts))
 	return root
 }
 
